@@ -101,10 +101,10 @@ func (r Route) Resolve() (definition RouteDefinition, err error) {
 }
 
 // Resolve calls a Router, validates the output, and returns a RouterDefinition, possibly with an error.
-// Any nil handlers, routes, router groups will also cause an error, as will any errors resolving these (recursive).
+// Any nil handlers, routes, or routers will also cause an error, as will any errors resolving these (recursive).
 func (r Router) Resolve() (definition RouterDefinition, err error) {
 	if r == nil {
-		err = errors.New("ginny.Router.Resolve nil router group")
+		err = errors.New("ginny.Router.Resolve nil router")
 		return
 	}
 	// these ones need to be resolved themselves
@@ -117,9 +117,9 @@ func (r Router) Resolve() (definition RouterDefinition, err error) {
 	// initialise the route and group slices in the definition so the count is correct
 	definition.Routes = make([]RouteDefinition, len(routes))
 	definition.Routers = make([]RouterDefinition, len(routers))
-	// handle router group error case
+	// handle router error case
 	if err != nil {
-		err = fmt.Errorf("ginny.Router.Resolve router group error (%s): %s",
+		err = fmt.Errorf("ginny.Router.Resolve router error (%s): %s",
 			definition.String(),
 			err.Error(),
 		)
@@ -147,11 +147,11 @@ func (r Router) Resolve() (definition RouterDefinition, err error) {
 			return
 		}
 	}
-	// resolve all the router groups (nil values get handled by Router.Resolve)
+	// resolve all the routers (nil values get handled by Router.Resolve)
 	for i, router := range routers {
 		definition.Routers[i], err = router.Resolve()
 		if err != nil {
-			err = fmt.Errorf("ginny.Router.Resolve router group error at index %d (%s): %s",
+			err = fmt.Errorf("ginny.Router.Resolve router error at index %d (%s): %s",
 				i,
 				definition.String(),
 				err.Error(),
@@ -193,18 +193,20 @@ func (d RouterDefinition) Apply(target gin.IRouter) (*gin.RouterGroup, error) {
 	for i, route := range d.Routes {
 		if _, err := route.Apply(group); err != nil {
 			return group, fmt.Errorf(
-				"ginny.RouterDefinition.Apply error applying route at index %d: %s",
+				"ginny.RouterDefinition.Apply error applying route at index %d (%s): %s",
 				i,
+				d.String(),
 				err.Error(),
 			)
 		}
 	}
-	// apply all nested router groups
+	// apply all nested routers
 	for i, router := range d.Routers {
 		if _, err := router.Apply(group); err != nil {
 			return group, fmt.Errorf(
-				"ginny.RouterDefinition.Apply error applying router group at index %d: %s",
+				"ginny.RouterDefinition.Apply error applying router at index %d (%s): %s",
 				i,
+				d.String(),
 				err.Error(),
 			)
 		}
@@ -224,7 +226,7 @@ func (r Route) Apply(target gin.IRoutes) (gin.IRoutes, error) {
 	}
 }
 
-// Apply is a convenience method that resolves the definition of the router group, before applying it.
+// Apply is a convenience method that resolves the definition of the router, before applying it.
 func (r Router) Apply(target gin.IRouter) (*gin.RouterGroup, error) {
 	if definition, err := r.Resolve(); err != nil {
 		return nil, fmt.Errorf("ginny.Router.Apply resolve error: %s", err.Error())
