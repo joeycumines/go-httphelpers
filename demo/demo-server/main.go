@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/joeycumines/httphelpers.go/demo/server"
+	"github.com/joeycumines/go-httphelpers/demo/server"
 	"fmt"
 	"os"
 )

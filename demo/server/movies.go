@@ -1,11 +1,11 @@
 package server
 
 import (
-	"github.com/joeycumines/httphelpers.go/ginny"
+	"github.com/joeycumines/go-httphelpers/ginny"
 	"github.com/gin-gonic/gin"
 	"errors"
 	"net/http"
-	"github.com/joeycumines/httphelpers.go/demo/server/models"
+	"github.com/joeycumines/go-httphelpers/demo/server/models"
 	"encoding/json"
 )
 

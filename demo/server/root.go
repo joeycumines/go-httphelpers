@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/joeycumines/httphelpers.go/ginny"
+	"github.com/joeycumines/go-httphelpers/ginny"
 	"github.com/gin-gonic/gin"
 )
 

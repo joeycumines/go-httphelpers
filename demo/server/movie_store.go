@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/joeycumines/httphelpers.go/demo/server/models"
+	"github.com/joeycumines/go-httphelpers/demo/server/models"
 	"sync"
 	"errors"
 )
